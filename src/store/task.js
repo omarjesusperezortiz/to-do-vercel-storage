@@ -9,22 +9,72 @@ export const useTaskStore = defineStore('task',{
         }
     }
 ,
-    actions : {
-    setTask(){
-
+  actions: {
+    async fetchTasks() {
+      const { data: tasks } = await supabase
+        .from("Task")
+        .select("*")
+        .order("id", { ascending: false });
+      this.tasks = tasks;
+      return this.tasks;
     },
-    updateTask(id,task){
-        //Encontrar el indice de la task con ese id y cambiar su contenido con task
-    },
+    // New code
+// task:    {
+//     user_id: id,
+//     title: 'Titulo',
+//     description: 'Descripcion del task'
+//      }
 
-    deleteTask(id){
-        //Encontramos el indice de ese ID y eliminamos ese indice del array
-    },
+    async newTask (task) {
+    const response = await supabase
+    .from('Task')
+    .insert(task)
+    console.log(response)},
+    
+    async getTasks ()  {
+    const response = await supabase 
+      .from('Task')
+      .select('*')
+      .order('id',{ ascending:false})
 
-    addTask(task){
-        //Comprobar que tenemos el id al insertar el registro, en caso de no tenerlo, 
-    }
-}
+      console.log(response)},
+
+//UPDATE TASK
+
+    //task:  { 
+    //     title: 'titulo modificado',
+    //     description: 'Descripcion del task modificado'
+    // }
+
+    async updateTask(taskId,task) {
+    const response = await supabase
+    .from('Task')
+    .update(task)
+    .eq('id', taskId)
+  
+  
+    console.log(response)
+  },
+
+  // DELETE MATCHING ROWS
+    async deleteTask (taskId) {
+
+    const response = await supabase
+    .from('Task')
+    .delete()
+    .eq('id', 'taskId')
+  
+    console.log(response)
+  
+  },
+    async toggleTask(is_complete, id){
+      const { data, error } = await supabase.from("tasks").update({
+        is_complete: is_complete,
+      }).match({
+        id: id,
+      });
+    },
+  },
 
 }
 )

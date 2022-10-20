@@ -1,8 +1,7 @@
 import {defineStore} from 'pinia'
 import {supabase} from '../api/index'
+import { useRouter } from 'vue-router';
 
-console.log(supabase,'supabase')
-// console.log(supabase.auth,'supabase.auth')
 
 //DEFINIMOS USER COMO NULL INICIALMENTE, LUEGO CON FETCH USER HACEMOS EL CAMBIO
 export const useStore = defineStore('user',{
@@ -17,7 +16,7 @@ export const useStore = defineStore('user',{
         const user = await (await supabase.auth.getUser()).data.user;
         this.user = user;
     // console.log(user.data.user.email, 'COMPROBANDO FETCH')
-        console.log(user, 'COMPROBANDO FETCH')
+        //console.log(user, 'COMPROBANDO FETCH')
     },
 
     async signIn(email, password) {
@@ -28,9 +27,24 @@ export const useStore = defineStore('user',{
         if (error) throw error;
         if (user) {
           this.user = user;
-          console.log(this.user);
+          //console.log(this.user);
         }
       },
+
+    async signUp (email,password) {
+  
+      const { user, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+      if (error) throw error;
+      if (user) {
+        this.user = user;
+        console.log(this.user);
+      }
+    },
+
+
 
 
 // INTENTAR DESPUES CON LOGIN

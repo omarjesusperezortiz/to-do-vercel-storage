@@ -1,6 +1,7 @@
 <template>
 
-    <div class="vue-template">
+    <div class="vue-template card-container">
+        <p v-show="errorMsg" class="error-msg"> {{ errorMsg }} </p>
         <form @submit.prevent='signIn'>
             <h2 >Iniciar Sesion</h2>
             <div class="form-group">
@@ -13,13 +14,14 @@
             </div>
             <button type="submit" class="btn btn-dark btn-lg btn-block">Sign In</button>
         </form>
+        <p>¿Aun no te has registrado? Regístrate <router-link to="/auth/register" class="link">aquí</router-link> </p>
     </div>
 
 </template>
 <script setup>
 import { ref } from 'vue';
-import { useRouter } from 'vue-router'
-import { useStore } from '../store/auth'
+import { useRouter } from 'vue-router';
+import { useStore } from '../store/auth';
 
 
 const router = useRouter();
@@ -33,9 +35,6 @@ const password = ref('');
 // Error Message
 const errorMsg = ref("");
 
-// Router to push user once SignedIn to the HomeView
-const redirect = useRouter();
-
 
 // Arrow function to Signin user to supaBase
 const signIn = async () => {
@@ -43,14 +42,15 @@ const signIn = async () => {
     // calls the user store and send the users info to backend to logIn
     await userStore.signIn(email.value, password.value);
     // redirects user to the homeView
-    redirect.push({ path: "/" });
+    router.push({ path: "/" });
   } catch (error) {
     // displays error message
-    errorMsg.value = `Error: ${error.message}`;
+    errorMsg.value = `Hay un error en las credenciales`;
+    console.log(error.message)
     // hides error message
     setTimeout(() => {
       errorMsg.value = null;
-    }, 5000);
+    }, 10000);
   }
 };
 
@@ -62,5 +62,9 @@ const signIn = async () => {
     display:flex;
     justify-content: space-between;
     gap:20px;
+}
+
+.link{
+    cursor:pointer;
 }
 </style>
