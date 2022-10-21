@@ -1,5 +1,6 @@
 <template>
-  <div class="vue-template card-container">
+  <div class="main-container">
+    <div class="vue-template card-container">
     <p v-show="errorMsg" class="error-msg">{{ errorMsg }}</p>
     <form @submit.prevent="signUp">
       <h2>Registrate</h2>
@@ -39,6 +40,9 @@
       <router-link to="/auth/login" class="link">aquí</router-link>
     </p>
   </div>
+
+  </div>
+
 </template>
 <script setup>
 import { ref } from "vue";
@@ -82,6 +86,18 @@ const signUp = async () => {
 
 </script>
 <style scoped>
+
+.main-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  text-align: center;
+  place-items:center;
+  display: flex;
+  min-width: 320px;
+  min-height: 100vh;
+  justify-content: center;
+}
+
 .form-group {
   margin: 20px;
   display: flex;

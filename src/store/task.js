@@ -1,11 +1,18 @@
+//TASK JS
+
+//AQUI ALMACENAMOS LAS ACCIONES DE TASK
+
 import {defineStore} from 'pinia'
 import { supabase } from "../api/index";
 import { useStore } from "./auth";
+
+
 
 export const useTaskStore = defineStore('task',{
     state:()=>{
         return{
             task:[]
+            
         }
     }
 ,
@@ -16,6 +23,7 @@ export const useTaskStore = defineStore('task',{
         .select("*")
         .order("id", { ascending: false });
       this.tasks = tasks;
+      console.log(tasks,'lista de tasks')
       return this.tasks;
     },
     // New code
@@ -25,11 +33,17 @@ export const useTaskStore = defineStore('task',{
 //     description: 'Descripcion del task'
 //      }
 
-    async newTask (task) {
-    const response = await supabase
-    .from('Task')
-    .insert(task)
-    console.log(response)},
+async addTask(title, description) {
+  console.log(useStore().user.id);
+  const { data, error } = await supabase.from("Task").insert([
+    {
+      user_id: useStore().user.id,
+      title,
+      // is_complete: false,
+      description,
+    },
+  ]);
+},
     
     async getTasks ()  {
     const response = await supabase 

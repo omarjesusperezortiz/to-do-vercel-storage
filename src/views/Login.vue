@@ -1,21 +1,23 @@
 <template>
+<div class="main-container">
+  <div class="vue-template card-container">
+      <p v-show="errorMsg" class="error-msg"> {{ errorMsg }} </p>
+      <form @submit.prevent='signIn'>
+          <h2 >Iniciar Sesion</h2>
+          <div class="form-group">
+              <label>Email address</label>
+              <input v-model="email" type="email" class="form-control form-control-lg" required/>
+          </div>
+          <div class="form-group">
+              <label>Password</label>
+              <input v-model="password" type="password" class="form-control form-control-lg" required/>
+          </div>
+          <button type="submit" class="btn btn-dark btn-lg btn-block">Sign In</button>
+      </form>
+      <p>¿Aun no te has registrado? Regístrate <router-link to="/auth/register" class="link">aquí</router-link> </p>
+  </div>
 
-    <div class="vue-template card-container">
-        <p v-show="errorMsg" class="error-msg"> {{ errorMsg }} </p>
-        <form @submit.prevent='signIn'>
-            <h2 >Iniciar Sesion</h2>
-            <div class="form-group">
-                <label>Email address</label>
-                <input v-model="email" type="email" class="form-control form-control-lg" required/>
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input v-model="password" type="password" class="form-control form-control-lg" required/>
-            </div>
-            <button type="submit" class="btn btn-dark btn-lg btn-block">Sign In</button>
-        </form>
-        <p>¿Aun no te has registrado? Regístrate <router-link to="/auth/register" class="link">aquí</router-link> </p>
-    </div>
+</div>
 
 </template>
 <script setup>
@@ -57,6 +59,17 @@ const signIn = async () => {
 
 </script>
 <style scoped>
+.main-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  text-align: center;
+  place-items:center;
+  display: flex;
+  min-width: 320px;
+  min-height: 100vh;
+  justify-content: center;
+}
+
 .form-group{
     margin: 20px;
     display:flex;

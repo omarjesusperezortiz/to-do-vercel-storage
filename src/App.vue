@@ -35,13 +35,5 @@ onMounted(async () =>{
 </script>
 
 <style scoped>
-li{
-  list-style: none;
-}
-.navbar{
-  display:flex;
-  flex-direction: row;
-  gap: 20px;
-  justify-content: center;
-}
+
 </style>

@@ -3,6 +3,7 @@ import {supabase} from '../api/index'
 import { useRouter } from 'vue-router';
 
 
+
 //DEFINIMOS USER COMO NULL INICIALMENTE, LUEGO CON FETCH USER HACEMOS EL CAMBIO
 export const useStore = defineStore('user',{
     state: () => ({
@@ -11,12 +12,14 @@ export const useStore = defineStore('user',{
 
     actions : {
 
+
 // CON LA ACCION FETCHUSER VAMOS A REEMPLEZAR EL VALOR DE USER:NULL POR EL DEL USER ACTUAL
    async fetchUser() {
         const user = await (await supabase.auth.getUser()).data.user;
         this.user = user;
     // console.log(user.data.user.email, 'COMPROBANDO FETCH')
-        //console.log(user, 'COMPROBANDO FETCH')
+      console.log(user, 'COMPROBANDO FETCH')
+      console.log(user.id, 'COMPROBANDO FETCH')
     },
 
     async signIn(email, password) {
