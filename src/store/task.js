@@ -16,15 +16,17 @@ export const useTaskStore = defineStore('task',{
         }
     }
 ,
+
+//CON ESTO ALMACENAMOS LOS DATOS EN SUPABASE AL DEFINESTORE
   actions: {
     async fetchTasks() {
-      const { data: tasks } = await supabase
+      const { data: task } = await supabase
         .from("Task")
         .select("*")
         .order("id", { ascending: false });
-      this.tasks = tasks;
-      console.log(tasks,'lista de tasks')
-      return this.tasks;
+      this.task = task;
+      console.log(task,'lista de tasks')
+      return this.task;
     },
     // New code
 // task:    {
@@ -32,6 +34,8 @@ export const useTaskStore = defineStore('task',{
 //     title: 'Titulo',
 //     description: 'Descripcion del task'
 //      }
+
+
 
 async addTask(title, description) {
   console.log(useStore().user.id);
@@ -92,3 +96,4 @@ async addTask(title, description) {
 
 }
 )
+

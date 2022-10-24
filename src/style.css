@@ -67,7 +67,8 @@ button:focus-visible {
 }
 
 #app {
-
+max-width:1050px;
+margin: 0 auto;
 }
 
 .card-container{

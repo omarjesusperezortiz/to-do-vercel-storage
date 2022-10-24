@@ -16,8 +16,7 @@
 <div class="hidden card-container new-task" id="newTask">
   <NewTask @add-task="setNewTask"/>
 </div>
-
-
+<TaskCard :task="addNewTask.task"/>
 
 </template>
 <script setup>
@@ -27,18 +26,17 @@ import Navbar from '../components/Navbar.vue'
 import NewTask from '../components/NewTask.vue'
 import { useTaskStore } from '../store/task'
 import {useStore} from "../store/auth"
+import TaskCard from "../components/TaskCard.vue"
 
+const addNewTask = useTaskStore();
 const router = useRouter();
 const userStore = useStore()
 
-const addNewTask = useTaskStore();
-
-// const user = await userStore.fetchUser()
-
-// console.log(user,'id en Home')
+console.log(addNewTask.task,"addNewTask.task")
 
 addNewTask.fetchTasks();
 
+//FUNCION PARA AGREGAR NUEVOS TASK
 
 async function setNewTask(task){
   await addNewTask.addTask(task.name, task.description);
@@ -90,9 +88,6 @@ window.addEventListener('click', function(e){
     justify-content: flex-end;
     
 }
-.logOut{
-
-}
 .logOut:hover{
   border-color: #fd1d7c;
   color: #fd1d7c;
@@ -139,4 +134,6 @@ window.addEventListener('click', function(e){
   left:0px;
 
 }
+
+
 </style>
