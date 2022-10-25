@@ -16,7 +16,11 @@
 <div class="hidden card-container new-task" id="newTask">
   <NewTask @add-task="setNewTask"/>
 </div>
-<TaskCard :task="addNewTask.task"/>
+<TaskCard :task="useTask.task"
+          @toggleTask="toggleTask"
+          @editTask="updateTask"
+          @deleteTask="deleteTask"/>
+
 
 </template>
 <script setup>
@@ -27,22 +31,45 @@ import NewTask from '../components/NewTask.vue'
 import { useTaskStore } from '../store/task'
 import {useStore} from "../store/auth"
 import TaskCard from "../components/TaskCard.vue"
+import { ref } from 'vue'
 
-const addNewTask = useTaskStore();
+const useTask = useTaskStore();
 const router = useRouter();
 const userStore = useStore()
+const tasks = ref([]);
 
-console.log(addNewTask.task,"addNewTask.task")
 
-addNewTask.fetchTasks();
+//***************************** */
+//AQUI LAS FUNCIONES DE TASK
+
+//con esto actualizamos valores del task
+const pullTasks = async () => {
+  tasks.value = await useTask.fetchTasks();
+};
+
+pullTasks();
 
 //FUNCION PARA AGREGAR NUEVOS TASK
 
 async function setNewTask(task){
-  await addNewTask.addTask(task.name, task.description);
-  addNewTask.fetchTasks();
-  console.log(task)
+  await useTask.addTask(task.name, task.description);
+  pullTasks();
 }
+
+const updateTask = async (title, description, id) => {
+  await useTaskStore().upDate(title, description, id);
+  pullTasks();
+};
+
+const toggleTask = async (toggle, id) => {
+  await useTask.toggleTask(toggle, id);
+  pullTasks();
+};
+
+const deleteTask = async (id) => {
+  await useTaskStore().deleteTask(id);
+  pullTasks();
+};
 
 //CIERRA SESION Y NOS REGRESA AL AUTH/LOGIN
 
@@ -51,7 +78,7 @@ async function setNewTask(task){
     // calls the user store and send the users info to backend to logIn
     await supabase.auth.signOut();
     // redirects user to the login
-    router.push({ path: "/auth/login" })
+    router.push({ name: "login" })
 
   } catch (error) {
     console.log(error,'logout')
@@ -78,6 +105,8 @@ window.addEventListener('click', function(e){
 }
   }
 })
+
+
 
 </script>
 <style scoped>
@@ -135,5 +164,7 @@ window.addEventListener('click', function(e){
 
 }
 
-
+#app{
+  max-width: 1200px;
+}
 </style>

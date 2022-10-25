@@ -5,33 +5,28 @@
 <script setup>
 
 import {ref,onMounted} from 'vue'
-import {login,newTask} from "./api"
 import {useStore} from "./store/auth"
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
 const userStore = useStore();
-const { user } = storeToRefs(userStore);
+const {user} = storeToRefs(userStore);
 
-onMounted(async () =>{
-    
-  try {
-    await userStore.fetchUser(); // here we call fetch user
-    
-    // console.log(user.value,'user para la condicion')
-    if (!user.value) {
-      // redirect them to logout if the user is not there
+//REDIRECCION EN BASE A CREDENCIALES
+onMounted( async () =>{
 
-      router.push({ path: "/auth/login" });
-    } else {
-      // continue to dashboard
-      // router.push({ path: "/" });
+    await userStore.fetchUser() // here we call fetch user
+    // console.log(await userStore.fetchUser(),'fetchuser dentro de onmounted'
+    console.log(user.value,"user.value")
+    if(!user.value){
+      console.log("hola")
+      router.push({ name: "login" })
     }
-  } catch (e) {
-    console.log(e);
-  }
+    else{console.log("adios")}
 })
+
+
 </script>
 
 <style scoped>

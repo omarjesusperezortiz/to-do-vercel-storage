@@ -16,8 +16,6 @@ export const useTaskStore = defineStore('task',{
         }
     }
 ,
-
-//CON ESTO ALMACENAMOS LOS DATOS EN SUPABASE AL DEFINESTORE
   actions: {
     async fetchTasks() {
       const { data: task } = await supabase
@@ -28,6 +26,7 @@ export const useTaskStore = defineStore('task',{
       console.log(task,'lista de tasks')
       return this.task;
     },
+
     // New code
 // task:    {
 //     user_id: id,
@@ -35,27 +34,26 @@ export const useTaskStore = defineStore('task',{
 //     description: 'Descripcion del task'
 //      }
 
-
-
 async addTask(title, description) {
   console.log(useStore().user.id);
   const { data, error } = await supabase.from("Task").insert([
     {
       user_id: useStore().user.id,
       title,
-      // is_complete: false,
+      is_complete: false,
       description,
+      
     },
   ]);
 },
     
-    async getTasks ()  {
-    const response = await supabase 
-      .from('Task')
-      .select('*')
-      .order('id',{ ascending:false})
+    // async getTasks ()  {
+    // const response = await supabase 
+    //   .from('Task')
+    //   .select('*')
+    //   .order('id',{ ascending:false})
 
-      console.log(response)},
+    //   console.log(response)},
 
 //UPDATE TASK
 
@@ -75,25 +73,25 @@ async addTask(title, description) {
   },
 
   // DELETE MATCHING ROWS
-    async deleteTask (taskId) {
+    async deleteTask (id) {
 
     const response = await supabase
     .from('Task')
     .delete()
-    .eq('id', 'taskId')
+    .match({id: id})
   
     console.log(response)
   
   },
-    async toggleTask(is_complete, id){
-      const { data, error } = await supabase.from("tasks").update({
-        is_complete: is_complete,
-      }).match({
-        id: id,
-      });
+
+  //CON ESTO CAMBIAMOS DE FALSO A VERDADERO
+    async toggleTask(toggle, id){
+      const { data, error } = await supabase
+      .from("Task")
+      .update({is_complete: toggle})
+      .match({id: id});
     },
   },
 
 }
 )
-

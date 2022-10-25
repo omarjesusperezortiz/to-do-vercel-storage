@@ -15,12 +15,14 @@ export const useStore = defineStore('user',{
 
 // CON LA ACCION FETCHUSER VAMOS A REEMPLEZAR EL VALOR DE USER:NULL POR EL DEL USER ACTUAL
    async fetchUser() {
-        const user = await (await supabase.auth.getUser()).data.user;
+        const user = (await supabase.auth.getUser()).data.user;
         this.user = user;
     // console.log(user.data.user.email, 'COMPROBANDO FETCH')
-      console.log(user, 'COMPROBANDO FETCH')
-      console.log(user.id, 'COMPROBANDO FETCH')
+      // console.log(user, 'Comprobando fetch user')
+      // console.log('hola!',user.email)
     },
+
+  
 
     async signIn(email, password) {
         const { user, error } = await supabase.auth.signInWithPassword({
@@ -30,7 +32,7 @@ export const useStore = defineStore('user',{
         if (error) throw error;
         if (user) {
           this.user = user;
-          //console.log(this.user);
+          // console.log(this.user);
         }
       },
 
@@ -43,7 +45,7 @@ export const useStore = defineStore('user',{
       if (error) throw error;
       if (user) {
         this.user = user;
-        console.log(this.user);
+        // console.log(this.user);
       }
     },
 
@@ -61,3 +63,4 @@ export const useStore = defineStore('user',{
 
 }
 )
+
