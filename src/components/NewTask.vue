@@ -1,10 +1,14 @@
 <template>
+    <Transition>
+      <div class="addError" v-if="showErrorMessage">
+        <h3 class="error-text">{{ errorMessage }}</h3>
+      </div>
+    </Transition>
   <div class="form-container">
-    <div v-if="showErrorMessage">
-      <p class="error-text">{{ errorMessage }}</p>
-    </div>
+
     <!-- titulo -->
         <div class="form-group">
+
             <span>Titulo</span>
           <input
             class="input-field-input"
@@ -24,22 +28,11 @@
         v-model="description"/>
         </div>
 
-    <!-- Importancia -->
-    <!-- <div class="form-group">
-        <span>Prioridad</span>
-        <div class="prioridad">
-            <input type="radio" id="importante" name="importancia" value="Importante" />
-            <label for="importante">importante</label><br />
-            <input type="radio" id="normal" name="importancia" value="Normal" />
-            <label for="normal">normal</label><br />
-        </div>
-    </div> -->
     <!-- Crear nueva tarea -->
     <div class="form-group task-button">
-        <button @click="errorFunction" class="button">Agregar tarea</button>
+        <button @click="finalAddTask" class="button">Agregar tarea</button>
     </div>
-          
-         
+
   </div>
 </template>
 <script setup>
@@ -52,24 +45,17 @@ import { useTaskStore } from "../store/task"
 const setTask = useTaskStore();
 const title = ref('');
 const description = ref('');
-
-// constant to save a variable that holds an initial false boolean value for the errorMessage container that is 
-//conditionally displayed depending if the input field is empty
+//Variable condicional para mostrar el div contenedor del mensaje de error
 const showErrorMessage = ref(false);
-
-// const constant to save a variable that holds the value of the error message
 const errorMessage = ref(null);
 
-const emit = defineEmits(['add-task']);
 
-// arrow function to call the form holding the task title and task description that uses a conditional to first 
-//checks if the task title is empty, if true the error message is displayed through the errorMessage container and sets 
-//a timeOut method that hides the error after some time. Else, its emmits a custom event to the home view with the task 
-//title and task description; clears the task title and task description input fields.
-const errorFunction = () => {
+const emit = defineEmits(['add-task','show']);
+
+const finalAddTask = () => {
   if(title.value.length === 0 || description.value.length === 0){
     showErrorMessage.value = true;
-    errorMessage.value = 'The task title or description is empty';
+    errorMessage.value = '¡Tienes que llenar ambos campos!';
     setTimeout(() => {
       // errorMessage.value = null;
       showErrorMessage.value = false;
@@ -85,6 +71,8 @@ const errorFunction = () => {
     emit("add-task", newTask);
     title.value = '';
     description.value = '';
+
+    emit("show");
 
     // setTask.addTask(name.value, description.value);
     // name.value = '';
@@ -111,6 +99,33 @@ const errorFunction = () => {
     display:flex;
     justify-content: space-between;
     gap:5px;
+}
+
+.addError{
+
+  position:absolute;
+  margin-top:-180px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  min-width:300px
+}
+
+.error-text{
+  place-content:center;
+  place-items:center;
+  text-align: center;
+}
+
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
 }
 
 </style>
