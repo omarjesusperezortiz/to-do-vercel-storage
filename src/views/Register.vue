@@ -74,7 +74,7 @@ const signUp = async () => {
   if (password.value === confirmPassword.value) {
     try {
       await useStore().signUp(email.value, password.value);
-      setTimeout(() => {redirect.push({ path: "/" })}, 5000);
+      setTimeout(() => {redirect.push({ name: "home" })}, 5000);
       errorMsg.value = 'Registro exitoso! Redirigiendo a la App'
     } catch (error) {
       // displays error message

@@ -43,13 +43,15 @@ const password = ref('');
 const errorMsg = ref("");
 
 
+
+
 // Arrow function to Signin user to supaBase
 const signIn = async () => {
   try {
     // calls the user store and send the users info to backend to logIn
     await userStore.signIn(email.value, password.value);
     // redirects user to the homeView
-    router.push({ path: "/" });
+    router.push({ name: "home" });
   } catch (error) {
     // Si existe algun error, se mostrará encima del login form
     errorMsg.value = `Hay un error en las credenciales`;

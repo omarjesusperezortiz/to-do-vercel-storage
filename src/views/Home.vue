@@ -62,18 +62,20 @@ import { useTaskStore } from '../store/task'
 import {useStore} from "../store/auth"
 import TaskCard from "../components/TaskCard.vue"
 import { ref } from 'vue'
+import { storeToRefs } from "pinia";
 
 const useTask = useTaskStore();
 const router = useRouter();
 const userStore = useStore()
 const tasks = ref([]);
-const user = ref([]);
 const show = ref(false)
+const {user} = storeToRefs(userStore);
 
 
 // Con esto actualizamos valores del user despues de hacer el login al Home
 const pullUser = async () => {
-  user.value = await userStore.fetchUser();
+  await userStore.fetchUser();
+  console.log(user.value)
 };
 
 pullUser();
