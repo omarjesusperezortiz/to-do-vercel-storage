@@ -34,7 +34,6 @@ export const useTaskStore = defineStore('task',{
 //      }
 
 async addTask(title, description) {
-  console.log(useStore().user.id);
   const { data, error } = await supabase.from("Task").insert([
     {
       user_id: useStore().user.id,

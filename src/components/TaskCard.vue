@@ -1,76 +1,98 @@
 <template>
-  <div class="task-container">
-    <TransitionGroup>
+  
+    <div class="task-container">
+      <TransitionGroup>
       <div
         class="card-container"
         :class="{ doneCard: task.is_complete == true }"
         v-for="(task, index) in task"
       >
         <div class="card-task">
-          <h3>{{ task.title }}</h3>
-          <p>{{ task.description }}</p>
-          <button
+          <!-- Botton completar -->
+          <button class="buttonDone buttonRight"
+          :class="{ buttonlight: task.is_complete == true,
+                    doneclicked: task.is_complete == true  }"
             type="button"
             @click="toggleTask(task.is_complete, task.id)"
             id="buttonDone"
           >
-            Done!
+            <i class="fa-solid fa-check"></i>
           </button>
+
+          <!-- ESTO ES LA INFO DE LA TAREA EN TARJETA -->
+
+          <h3 class="overflow">{{ task.title }}</h3>
+          <p class="overflow">{{ task.description }}</p>
+
+          <!-- Boton Borrar  -->
           <button
             v-if="task.is_complete"
+            :class="{ buttonlight: task.is_complete == true }"
+            class="buttonRight"
             type="button"
             @click="deleteTask(task.id)"
             id="buttonDelete"
           >
-            Delete!
+            <i class="fa-solid fa-trash"></i>
           </button>
+          <!-- Boton editar  -->
           <button
             v-else
+            :class="{ buttonlight: task.is_complete == true }"
+            class="buttonRight"
             type="button"
             @click="changeNameActiveValue(task)"
             id="buttonEdit"
           >
-            Editar
+            <i class="fa-solid fa-magnifying-glass"></i>
           </button>
         </div>
-        <div v-if="changeNameActive && idRef === task.id" class="changeName" >
-            <!-- @click="changeName(task.id, index)" -->
+  <!-- Esto es el display del edittask -->
+  <Transition>
+        <div v-if="changeNameActive && idRef === task.id" class="changeName">
+          <!-- @click="changeName(task.id, index)" -->
 
-            <div class="add-task-form">
-              <div class="input-field">
-                <input
-                  class="input-field-input"
-                  type="text"
-                  placeholder="Edit title"
-                  v-model="name"
-                />
-              </div>
-
-              <div class="input-field">
-                <input
-                  class="input-field-input"
-                  type="text"
-                  placeholder="Edit description"
-                  v-model="description"
-                />
-              </div>
-
-              <!-- <button @click.prevent="errorFunction" class="button">Add</button> -->
-              <button @click="changeNameTask(task.id, index)" class="button">
-                Change
-              </button>
+          <div class="add-task-form">
+            <div class="form-group">
+              <input
+                class="input-field-input"
+                type="text"
+                v-model="name"
+              />
             </div>
+
+            <div class="form-group">
+              <textarea
+                class="input-field-input"
+                type="text"
+                rows="6"
+                style="overflow:scroll"
+                v-model="description"
+              />
           </div>
+
+            <!-- <button @click.prevent="errorFunction" class="button">Add</button> -->
+            <div class="form-group change-button">
+            <button @click="changeNameTask(task.id, index)" class="button">
+              Editar tarea
+            </button>
+          </div>
+          </div>
+        </div>
+  </Transition>
+  <!-- Esto es el background del edittask -->
+  <Transition>
         <div
           @click="changeNameActiveValue(task)"
           class="background-task-effect"
           v-if="changeNameActive && idRef === task.id"
-        >
-
-        </div>
+        ></div>
+      </Transition>
+  <!--  -->
       </div>
     </TransitionGroup>
-  </div>
+    </div>
+
 </template>
 <script setup>
 import { ref } from "vue";
@@ -130,13 +152,60 @@ const emit = defineEmits([
   "deleteTask",
   "toggleTask",
 ]);
+
+//CERRAMOS EL EDIT TASK CON LETRA ESC
+
+document.addEventListener('keydown', (event) => {
+        
+        if (event.key === 'Escape') {
+         //if esc key was not pressed in combination with ctrl or alt or shift
+              changeNameActive.value = false;
+              
+            
+        }
+    });
+
+
 </script>
 
 <style scoped>
+
+.overflow{
+  text-overflow: ellipsis; 
+  overflow: hidden; 
+  white-space: nowrap;
+
+}
+.input-field-input{
+  border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #1a1a1a;
+    width:100%;
+    overflow:auto;
+    resize:none;
+}
+
+.form-group{
+    margin: 20px;
+    display:flex;
+    gap:20px;
+}
+
+.change-button{
+  display:flex;
+    justify-content: center;
+    margin:0;
+}
+
 .task-container {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 20px;
+  margin-bottom: 30px;
 }
 
 .card-container {
@@ -153,23 +222,48 @@ const emit = defineEmits([
   color: #3f3f3f;
 }
 
+.buttonlight{
+ background-color: #2f2f2f;
+}
+
 .background-task-effect {
   background: rgba(0, 0, 0, 0.6);
-  position: absolute;
+  position: fixed;
   top: 0px;
   right: 0px;
   bottom: 0px;
   left: 0px;
 }
 .changeName {
-  position: absolute;
-  z-index:99999;
+  position: fixed;
+  z-index: 99999;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   width: 350px;
-  height: 210px;
-  background-color: antiquewhite;
+  height: auto;
+  border: 1px solid #2f2f2f;
+    border-radius: 12px;
+    padding: 24px;
+    background-color: #2f2f2f;
+    transition: all 0.5s ease;
+}
+
+.buttonDone{
+  display:block;
+  margin:0 0 0 auto;
+  border-radius:30px;
+  aspect-ratio: 1;
+  padding:4px 8px;
+}
+
+.buttonRight{
+  display:block;
+  margin:0 0 0 auto;
+}
+
+.doneclicked{
+  outline: 4px auto white;
 }
 
 .card-task {

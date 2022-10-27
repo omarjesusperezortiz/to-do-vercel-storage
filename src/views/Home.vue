@@ -13,15 +13,23 @@
 <div class="main-container">
   <!-- Agregamos un v-if para determinar 
     si hay elemento de tasks en display e invitar a crear uno -->
-  <div v-if="tasks == ![]"><p>Aun no tienes tareas <br>Agrega una nueva! :)</p></div>
+    <!-- <Transition name="notask"> -->
+  <div class="dotasks" :class="{ appear: tasks == ![] }" >
+   <h3>No tienes más tareas. <br>Agrega una nueva! :)</h3>
+  </div>
+    <!-- </Transition> -->
   <!-- Con este boton mostramos el div con V-if=show -->
-  <button @click="showNewTask2()">Agrega una tarea</button>
+  <button class="AgregarTarea" @click="showNewTask2()"> 
+     <!-- <i class="fa-solid fa-plus"></i>  -->
+     <span class="agregartext">  Agregar tarea</span>
+     <span class="commandkey">⌘K</span>
+    </button>
 </div>
 <Transition>
-<div v-if="show">
+<div v-if="show" >
 
   <!-- Aqui volvemos a poner el showNewTask para cerrar con el fondo oscuro -->
-<div @click="showNewTask2()" class="background-task-effect" id="backTask"></div>
+<div @click="showNewTask2()"   class="background-task-effect" id="backTask"></div>
 
 <div class="card-container new-task" id="newTask">
   <!-- el @add-task es una funcion dentro del componente de NewTask para llamar
@@ -30,18 +38,19 @@
 @add-task="setNewTask"
 @show="showNewTask2"
 
+
 />
 </div>
 
 </div>
 
 </Transition>
-<Transition appear>
+
       <TaskCard :task="useTask.task"
           @toggleTask="toggleTask"
           @editTask="updateTask"
           @deleteTask="deleteTask"/>
-</Transition>
+
 
 </template>
 <script setup>
@@ -58,8 +67,16 @@ const useTask = useTaskStore();
 const router = useRouter();
 const userStore = useStore()
 const tasks = ref([]);
+const user = ref([]);
 const show = ref(false)
 
+
+// Con esto actualizamos valores del user despues de hacer el login al Home
+const pullUser = async () => {
+  user.value = await userStore.fetchUser();
+};
+
+pullUser();
 
 //***************************** */
 //AQUI LAS FUNCIONES DE TASK
@@ -115,6 +132,33 @@ const showNewTask2 = () =>{
 show.value= !show.value
 }
 
+
+//CERRAMOS EL NEW TASK CON LETRA ESC
+
+document.addEventListener('keydown', (event) => {
+        
+        if (event.key === 'Escape') {
+         //if esc key was not pressed in combination with ctrl or alt or shift
+            const isNotCombinedKey = !(event.ctrlKey || event.altKey || event.shiftKey);
+            if (isNotCombinedKey) {
+                    show.value = false
+                    console.log(show.value,'valor de show')
+              
+            }
+        }
+    });
+
+//CON ESTO ABRIMOS AGREGAR TAREA CON COMMAND/CONTROL + ENTER
+    document.addEventListener('keydown', (e) => {  
+        // e.preventDefault();
+        if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+            console.log('fire!')
+            showNewTask2() 
+        }  
+    })
+
+
+
 //Antiguo codigo para show y hidden
 
 // const showNewTask = () => {
@@ -140,6 +184,32 @@ show.value= !show.value
 
 </script>
 <style scoped>
+
+.dotasks{
+  display:none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition-delay:200ms;
+  color:transparent;
+}
+
+.commandkey{
+    border:rgba(255, 255, 255, 0.87) 2px solid;
+    border-radius: 5px;
+    padding: 5px;
+    margin-left: 15px;
+    font-size: 20px;
+}
+
+
+.appear{
+  transition-delay:100ms;
+  color:rgba(255, 255, 255, 0.87)!important;
+  display:block;
+}
+
 
 .user-container{
     margin: 30px;
@@ -170,13 +240,13 @@ show.value= !show.value
   justify-content: center;
 }
 .new-task{
-  position: absolute; 
-  position:absolute; 
+
+  position:fixed; 
   left:50%;
   top:50%;
   transform: translate(-50%, -50%);
   width: 350px;
-  height: 210px;
+  height: auto;
 }
 
 .logo-container{
@@ -185,13 +255,30 @@ show.value= !show.value
 
 .background-task-effect{
   background:rgba(0, 0, 0, 0.60);
-  position:absolute;
+  position:fixed;
   top:0px;
   right:0px;
   bottom:0px;
   left:0px;
 
 }
+
+.AgregarTarea{
+  position:fixed;
+  right:10%;
+  bottom:10%;
+  font-size: 25px;
+  border-radius: 25px!important;
+  transition: all 0.2s;
+}
+
+.AgregarTarea:hover{
+  transform:scale(1.02);
+}
+
+
+
+
 
 #app{
   max-width: 1200px;
@@ -205,6 +292,23 @@ show.value= !show.value
 .v-enter-from,
 .v-leave-to {
   opacity: 0;
+}
+
+
+.notask-enter-active{
+
+}
+.notask-leave-active {
+  transition: opacity 0.5s ease;
+  
+}
+
+.notask-enter-from{
+
+}
+.notask-leave-to {
+  opacity: 0;
+
 }
 
 
