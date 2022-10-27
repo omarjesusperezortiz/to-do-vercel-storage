@@ -12,7 +12,6 @@ export const useTaskStore = defineStore('task',{
     state:()=>{
         return{
             task:[]
-            
         }
     }
 ,
@@ -62,11 +61,14 @@ async addTask(title, description) {
     //     description: 'Descripcion del task modificado'
     // }
 
-    async updateTask(taskId,task) {
+    async updateTask(title,description,id) {
     const response = await supabase
     .from('Task')
-    .update(task)
-    .eq('id', taskId)
+    .update({
+      title: title,
+      description: description,
+    })
+    .match({id: id})
   
   
     console.log(response)

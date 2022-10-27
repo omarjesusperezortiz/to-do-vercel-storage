@@ -1,11 +1,15 @@
 <template>
+  <Transition appear>
   <div class="main-container">
     <div class="vue-template card-container">
+      <!-- vshow muestra el mensaje de arror -->
     <p v-show="errorMsg" class="error-msg">{{ errorMsg }}</p>
+    <!-- submit.prevent evita el reload de la pagina -->
     <form @submit.prevent="signUp">
       <h2>Registrate</h2>
       <div class="form-group">
         <label>Email address</label>
+        <!-- los valores vmodel seran los que se enviaran a Auth -->
         <input
           v-model="email"
           type="email"
@@ -42,7 +46,7 @@
   </div>
 
   </div>
-
+</Transition>
 </template>
 <script setup>
 import { ref } from "vue";
@@ -70,8 +74,8 @@ const signUp = async () => {
   if (password.value === confirmPassword.value) {
     try {
       await useStore().signUp(email.value, password.value);
-      setTimeout(() => {redirect.push({ path: "/auth/login" })}, 5000);
-      errorMsg.value = 'Going back to login'
+      setTimeout(() => {redirect.push({ path: "/" })}, 5000);
+      errorMsg.value = 'Registro exitoso! Redirigiendo a la App'
     } catch (error) {
       // displays error message
       // hides error message
@@ -108,4 +112,15 @@ const signUp = async () => {
 .link {
   cursor: pointer;
 }
+
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+
 </style>

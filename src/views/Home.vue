@@ -1,26 +1,47 @@
 <template>
   <header>
     <div class="user-container">
+      <!-- Aqui declaramos el boton que realiza la sesion out -->
     <button class="logOut" @click="logOut()">Log Out</button>
     </div>
     <div class="logo-container">
+      <!-- aqui incluimos el navbar  -->
       <Navbar/>
     </div>
   </header>
 
 <div class="main-container">
-  <p>Aun no tienes tareas</p>
-  <button @click="showNewTask()">Agrega una tarea</button>
+  <!-- Agregamos un v-if para determinar 
+    si hay elemento de tasks en display e invitar a crear uno -->
+  <div v-if="tasks == ![]"><p>Aun no tienes tareas <br>Agrega una nueva! :)</p></div>
+  <!-- Con este boton mostramos el div con V-if=show -->
+  <button @click="showNewTask2()">Agrega una tarea</button>
 </div>
-<div class="background-task-effect hidden" id="backTask"></div>
-<div class="hidden card-container new-task" id="newTask">
-  <NewTask @add-task="setNewTask"/>
+<Transition>
+<div v-if="show">
+
+  <!-- Aqui volvemos a poner el showNewTask para cerrar con el fondo oscuro -->
+<div @click="showNewTask2()" class="background-task-effect" id="backTask"></div>
+
+<div class="card-container new-task" id="newTask">
+  <!-- el @add-task es una funcion dentro del componente de NewTask para llamar
+        a la funcion setNewTask en Home.vue(componente actual) -->
+<NewTask class="newTaskBox" 
+@add-task="setNewTask"
+@show="showNewTask2"
+
+/>
 </div>
-<TaskCard :task="useTask.task"
+
+</div>
+
+</Transition>
+<Transition appear>
+      <TaskCard :task="useTask.task"
           @toggleTask="toggleTask"
           @editTask="updateTask"
           @deleteTask="deleteTask"/>
-
+</Transition>
 
 </template>
 <script setup>
@@ -37,6 +58,7 @@ const useTask = useTaskStore();
 const router = useRouter();
 const userStore = useStore()
 const tasks = ref([]);
+const show = ref(false)
 
 
 //***************************** */
@@ -57,7 +79,7 @@ async function setNewTask(task){
 }
 
 const updateTask = async (title, description, id) => {
-  await useTaskStore().upDate(title, description, id);
+  await useTaskStore().updateTask(title, description, id);
   pullTasks();
 };
 
@@ -70,6 +92,8 @@ const deleteTask = async (id) => {
   await useTaskStore().deleteTask(id);
   pullTasks();
 };
+
+//***************************** */
 
 //CIERRA SESION Y NOS REGRESA AL AUTH/LOGIN
 
@@ -85,26 +109,32 @@ const deleteTask = async (id) => {
   }
 };
 
-//MOSTRAR LA OPCION DE NEW TASK Y OSCURECER EL FONDO
+//MOSTRAR LA OPCION DE NEW TASK Y OSCURECER EL FONDO CON V-IF mas resumido.
 
-const showNewTask = () => {
-  document.getElementById("newTask").classList.add('show')
-  document.getElementById("backTask").classList.add('show')
+const showNewTask2 = () =>{
+show.value= !show.value
 }
+
+//Antiguo codigo para show y hidden
+
+// const showNewTask = () => {
+//   document.getElementById("newTask").classList.add('show')
+//   document.getElementById("backTask").classList.add('show')
+// }
 
 //SALIR DE NEW TASK CUANDO SE HACE CLICK AL FONDO OSCURO
 
-window.addEventListener('click', function(e){
+// window.addEventListener('click', function(e){
 	
-	if (document.getElementById('backTask').contains(e.target)){
-    document.getElementById("backTask").classList.remove('show')
-    document.getElementById("newTask").classList.remove('show')
-  } 
-  else{
-  {
-}
-  }
-})
+// 	if (document.getElementById('backTask').contains(e.target)){
+//     document.getElementById("backTask").classList.remove('show')
+//     document.getElementById("newTask").classList.remove('show')
+//   } 
+//   else{
+//   {
+// }
+//   }
+// })
 
 
 
@@ -147,7 +177,6 @@ window.addEventListener('click', function(e){
   transform: translate(-50%, -50%);
   width: 350px;
   height: 210px;
-
 }
 
 .logo-container{
@@ -155,7 +184,7 @@ window.addEventListener('click', function(e){
 }
 
 .background-task-effect{
-  background:rgba(0, 0, 0, 0.40);
+  background:rgba(0, 0, 0, 0.60);
   position:absolute;
   top:0px;
   right:0px;
@@ -167,4 +196,17 @@ window.addEventListener('click', function(e){
 #app{
   max-width: 1200px;
 }
+
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+
+
+
 </style>
