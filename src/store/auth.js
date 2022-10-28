@@ -52,13 +52,13 @@ export const useStore = defineStore('user',{
 
 
 
-// INTENTAR DESPUES CON LOGIN
-    login(){
+// // INTENTAR DESPUES CON LOGIN
+//     login(){
 
-    },
-    logout(){
+//     },
+//     logout(){
 
-    }
+//     }
 }
 
 }

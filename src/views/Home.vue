@@ -267,6 +267,8 @@ document.addEventListener('keydown', (event) => {
   font-size: 25px;
   border-radius: 25px!important;
   transition: all 0.2s;
+  background-color:rgba(0, 0, 0, 0.3);
+  backdrop-filter: saturate(50%) blur(8px);
 }
 
 .AgregarTarea:hover{

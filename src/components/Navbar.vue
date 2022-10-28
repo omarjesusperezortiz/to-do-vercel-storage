@@ -3,11 +3,12 @@
     <h1 class="app-logo"><span class="clip">TaskApp</span></h1>
     <div class="user-container">
       <!-- Aqui declaramos el boton que realiza la sesion out -->
-      <button class="logOut" @click="logOut()">Log Out</button>
+      <button class="logOut" @click="logOut()">Cerrar sesion</button>
     </div>
   </div>
 </template>
 <script setup>
+//Definimos un emite para enviar informacion a la funcion en Home de logOut
 const emit = defineEmits(["log-out"]);
 
 const logOut = () => {

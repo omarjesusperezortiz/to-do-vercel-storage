@@ -10,9 +10,9 @@
   </Transition>
     <!-- submit.prevent evita el reload de la pagina -->
     <form @submit.prevent="signUp">
-      <h2>Registrate</h2>
+      <h2>Regístrate</h2>
       <div class="register-login-container">
-      <h4>Email address</h4>
+      <h4>Correo electrónico</h4>
       <div class="form-group">
         <!-- los valores vmodel seran los que se enviaran a Auth -->
         <input
@@ -22,7 +22,7 @@
           required
         />
       </div>
-      <h4>Password</h4>
+      <h4>Contraseña</h4>
       <div class="form-group">
         
         <input
@@ -32,7 +32,7 @@
           required
         />
       </div>
-      <h4>Confirm Password</h4>
+      <h4>Confirmar contraseña</h4>
       <div class="form-group">
         
         <input
@@ -44,7 +44,7 @@
       </div>
     </div>
       <button type="submit" class="btn btn-dark btn-lg btn-block">
-        Register
+        Registrar
       </button>
     </form>
     <p>

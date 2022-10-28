@@ -114,33 +114,39 @@ const changeNameActive = ref(false);
 const idRef = ref(null);
 const show = ref(false);
 
+//
 const changeNameActiveValue = (task) => {
+  //idRef se usa para activar la ventanada de change correspondiente al elemento
   idRef.value = task.id;
   changeNameActive.value = !changeNameActive.value;
+  // determinamos los valores que deben estar en el Vmodel de change
   name.value = task.title;
   description.value = task.description;
 
-  console.log(task.id, changeNameActive.value);
+  // console.log(task.id, changeNameActive.value);
 };
 
+//Aqui enviamos el valor toggle y el id correspondiente
 const toggleTask = (toggle, id) => {
   toggle = !toggle;
   show.value = !show.value;
   emit("toggleTask", toggle, id);
-  console.log(toggle, id, "toggle y id");
+  // console.log(toggle, id, "toggle y id");
 };
 
 const deleteTask = (id) => {
-  console.log(id);
+  // console.log(id);
   // const taskToDelete = props.task.filter((task) => task.id === id);
+  // Aqui le vamos el valor id a function emit.
   emit("deleteTask", id);
 };
 
 const changeNameTask = (id, index) => {
   console.log(name.value, id, description.value, "name input value");
-
+//Conseguimos los valores para cambiar del VMODEL
   emit("editTask", name.value, description.value, id);
 
+  //aqui refrescamos los valores
   name.value = "";
   description.value = "";
   changeNameActive.value = false;

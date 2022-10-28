@@ -12,20 +12,20 @@
       <form @submit.prevent='signIn'>
           <h2 >Iniciar Sesion</h2>
           <div class="register-login-container">
-            <h4>Email address</h4>
+            <h4>Correo electrónico</h4>
           <div class="form-group">
 
             <!-- Valor del vmodel sera la variable a enviar al userStore -->
               <input v-model="email" type="email" class="register-login-input" required/>
           </div>
-          <h4>Password</h4>
+          <h4>Constraseña</h4>
           <div class="form-group">
 
               <!-- Valor del vmodel sera la variable a enviar al userStore -->
               <input v-model="password" type="password" class="register-login-input" required/>
           </div>
         </div>
-          <button type="submit" class="btn btn-dark btn-lg btn-block">Sign In</button>
+          <button type="submit" class="btn btn-dark btn-lg btn-block">Iniciar</button>
       </form>
       <p>¿Aun no te has registrado? Regístrate <router-link to="/auth/register" class="link">aquí</router-link> </p>
   </div>
