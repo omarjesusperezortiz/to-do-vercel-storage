@@ -1,22 +1,30 @@
 <template>
   <Transition appear>
 <div class="main-container">
-  <div class="vue-template card-container">
+  <div class="vue-template card-container modify2">
     <!-- Aqui mostramos un error de mensaje en caso no se cumpla la condicion -->
-      <p v-show="errorMsg" class="error-msg"> {{ errorMsg }} </p>
+    <Transition>
+    <div v-if="errorMsg" class="addError modify">
+      <h3  class="error-text"> {{ errorMsg }} </h3>
+    </div>
+    </Transition>
       <!-- El evento de enviar ya no volverá a cargar la página. -->
       <form @submit.prevent='signIn'>
           <h2 >Iniciar Sesion</h2>
+          <div class="register-login-container">
+            <h4>Email address</h4>
           <div class="form-group">
-              <label>Email address</label>
+
             <!-- Valor del vmodel sera la variable a enviar al userStore -->
-              <input v-model="email" type="email" class="form-control form-control-lg" required/>
+              <input v-model="email" type="email" class="register-login-input" required/>
           </div>
+          <h4>Password</h4>
           <div class="form-group">
-              <label>Password</label>
+
               <!-- Valor del vmodel sera la variable a enviar al userStore -->
-              <input v-model="password" type="password" class="form-control form-control-lg" required/>
+              <input v-model="password" type="password" class="register-login-input" required/>
           </div>
+        </div>
           <button type="submit" class="btn btn-dark btn-lg btn-block">Sign In</button>
       </form>
       <p>¿Aun no te has registrado? Regístrate <router-link to="/auth/register" class="link">aquí</router-link> </p>
@@ -51,21 +59,58 @@ const signIn = async () => {
     // calls the user store and send the users info to backend to logIn
     await userStore.signIn(email.value, password.value);
     // redirects user to the homeView
-    router.push({ name: "home" });
+    errorMsg.value = 'Iniciando sesion...'
+      setTimeout(() => {
+        router.push({ name: "home" })},
+       2000);
   } catch (error) {
     // Si existe algun error, se mostrará encima del login form
     errorMsg.value = `Hay un error en las credenciales`;
-    console.log(error.message)
+    console.log(error)
     // hides error message //escoden el error si pasa "#" ms
     setTimeout(() => {
       errorMsg.value = null;
-    }, 10000);
+    }, 5000);
   }
 };
 
 
 </script>
 <style scoped>
+
+.register-login-input{
+  border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #1a1a1a !important;
+    width: 100%;
+    overflow: auto;
+    resize: none;
+    margin-bottom:10px
+}
+
+.form-group {
+    margin: 5px 0;
+    display: flex;
+    gap: 20px;
+}
+
+.modify2{
+  width:350px!important;
+  height:auto!important;
+  padding: 15px 40px;
+}
+
+h4{
+  margin:0;
+  text-align:start}
+
+  .modify{
+  margin-top:-215px
+}
 .main-container {
   max-width: 1280px;
   margin: 0 auto;
@@ -77,12 +122,6 @@ const signIn = async () => {
   justify-content: center;
 }
 
-.form-group{
-    margin: 20px;
-    display:flex;
-    justify-content: space-between;
-    gap:20px;
-}
 
 .link{
     cursor:pointer;

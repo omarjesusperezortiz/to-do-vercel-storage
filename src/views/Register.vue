@@ -1,40 +1,48 @@
 <template>
   <Transition appear>
   <div class="main-container">
-    <div class="vue-template card-container">
+    <div class="vue-template card-container modify2">
       <!-- vshow muestra el mensaje de arror -->
-    <p v-show="errorMsg" class="error-msg">{{ errorMsg }}</p>
+    <Transition>
+    <div v-if="errorMsg" class="addError modify">
+      <h3  class="error-text"> {{ errorMsg }} </h3>
+    </div>
+  </Transition>
     <!-- submit.prevent evita el reload de la pagina -->
     <form @submit.prevent="signUp">
       <h2>Registrate</h2>
+      <div class="register-login-container">
+      <h4>Email address</h4>
       <div class="form-group">
-        <label>Email address</label>
         <!-- los valores vmodel seran los que se enviaran a Auth -->
         <input
           v-model="email"
           type="email"
-          class="form-control form-control-lg"
+          class="register-login-input"
           required
         />
       </div>
+      <h4>Password</h4>
       <div class="form-group">
-        <label>Password</label>
+        
         <input
           v-model="password"
           type="password"
-          class="form-control form-control-lg"
+          class="register-login-input"
           required
         />
       </div>
+      <h4>Confirm Password</h4>
       <div class="form-group">
-        <label>Confirm Password</label>
+        
         <input
           v-model="confirmPassword"
           type="password"
-          class="form-control form-control-lg"
+          class="register-login-input"
           required
         />
       </div>
+    </div>
       <button type="submit" class="btn btn-dark btn-lg btn-block">
         Register
       </button>
@@ -74,23 +82,60 @@ const signUp = async () => {
   if (password.value === confirmPassword.value) {
     try {
       await useStore().signUp(email.value, password.value);
-      setTimeout(() => {redirect.push({ name: "home" })}, 5000);
-      errorMsg.value = 'Registro exitoso! Redirigiendo a la App'
+      errorMsg.value = 'Usuario creado! Redirigiendo...'
+      setTimeout(() => {
+        redirect.push({ name: "home" })},
+       3000);
     } catch (error) {
       // displays error message
       // hides error message
-      setTimeout(() => {errorMsg.value = null}, 10000);
+      if(error='AuthApiError: User already registered'){
+        errorMsg.value = 'El usuario ya existe!'
+      }
     }
     return;
   }
   else{
-    errorMsg.value = 'Password do not match';
+    errorMsg.value = 'La contraseña no coincide'
   }
 };
 
 </script>
 <style scoped>
 
+.register-login-input{
+  border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #1a1a1a !important;
+    width: 100%;
+    overflow: auto;
+    resize: none;
+    margin-bottom:10px
+}
+
+.form-group {
+    margin: 5px 0;
+    display: flex;
+    gap: 20px;
+}
+
+.modify2{
+  width:350px!important;
+  height:auto!important;
+  padding: 15px 40px;
+}
+
+h4{
+  margin:0;
+  text-align:start}
+
+.modify{
+  margin-top:-250px
+}
 .main-container {
   max-width: 1280px;
   margin: 0 auto;
@@ -102,12 +147,7 @@ const signUp = async () => {
   justify-content: center;
 }
 
-.form-group {
-  margin: 20px;
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-}
+
 
 .link {
   cursor: pointer;

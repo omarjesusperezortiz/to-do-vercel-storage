@@ -206,6 +206,7 @@ document.addEventListener('keydown', (event) => {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 20px;
   margin-bottom: 30px;
+  margin-top:100px
 }
 
 .card-container {

@@ -1,12 +1,10 @@
 <template>
   <header>
-    <div class="user-container">
-      <!-- Aqui declaramos el boton que realiza la sesion out -->
-    <button class="logOut" @click="logOut()">Log Out</button>
-    </div>
+
     <div class="logo-container">
       <!-- aqui incluimos el navbar  -->
-      <Navbar/>
+      <Navbar
+      @log-out="logOut"/>
     </div>
   </header>
 
@@ -15,7 +13,7 @@
     si hay elemento de tasks en display e invitar a crear uno -->
     <!-- <Transition name="notask"> -->
   <div class="dotasks" :class="{ appear: tasks == ![] }" >
-   <h3>No tienes más tareas. <br>Agrega una nueva! :)</h3>
+   <h3>No tienes tareas. <br>Agrega una nueva! ;)</h3>
   </div>
     <!-- </Transition> -->
   <!-- Con este boton mostramos el div con V-if=show -->
@@ -75,7 +73,7 @@ const {user} = storeToRefs(userStore);
 // Con esto actualizamos valores del user despues de hacer el login al Home
 const pullUser = async () => {
   await userStore.fetchUser();
-  console.log(user.value)
+  console.log("Hola!,",user.value.email)
 };
 
 pullUser();
@@ -124,7 +122,7 @@ const deleteTask = async (id) => {
     router.push({ name: "login" })
 
   } catch (error) {
-    console.log(error,'logout')
+    // console.log(error,'logout')
   }
 };
 
@@ -144,7 +142,7 @@ document.addEventListener('keydown', (event) => {
             const isNotCombinedKey = !(event.ctrlKey || event.altKey || event.shiftKey);
             if (isNotCombinedKey) {
                     show.value = false
-                    console.log(show.value,'valor de show')
+                    // console.log(show.value,'valor de show')
               
             }
         }
@@ -154,7 +152,7 @@ document.addEventListener('keydown', (event) => {
     document.addEventListener('keydown', (e) => {  
         // e.preventDefault();
         if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-            console.log('fire!')
+            // console.log('fire!')
             showNewTask2() 
         }  
     })
@@ -219,10 +217,7 @@ document.addEventListener('keydown', (event) => {
     justify-content: flex-end;
     
 }
-.logOut:hover{
-  border-color: #fd1d7c;
-  color: #fd1d7c;
-}
+
 
 .hidden{
   display:none;
@@ -252,7 +247,7 @@ document.addEventListener('keydown', (event) => {
 }
 
 .logo-container{
-  margin-top: -40px;
+
 }
 
 .background-task-effect{
@@ -275,7 +270,7 @@ document.addEventListener('keydown', (event) => {
 }
 
 .AgregarTarea:hover{
-  transform:scale(1.02);
+  border: 2px solid #646cff;
 }
 
 
