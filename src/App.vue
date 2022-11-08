@@ -21,6 +21,7 @@ onMounted( async () =>{
 
     await userStore.fetchUser() //Aqui llamamos al usuario
 
+
     if(!user.value){     //Esta condicion redirecciona el login al home en caso no haya info de user.
 
       router.push({ name: "login" })
