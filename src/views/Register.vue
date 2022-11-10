@@ -49,7 +49,7 @@
     </form>
     <p>
       ¿Ya tienes una cuenta? Ingresa
-      <router-link :to="{ name: 'login'}" class="link">aquí</router-link>
+      <router-link to="/auth/login" class="link">aquí</router-link>
     </p>
   </div>
 

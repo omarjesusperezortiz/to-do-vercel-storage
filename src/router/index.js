@@ -1,8 +1,8 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 
 const routes = [
 
-  { path: "/task-app/auth",
+  { path: "/auth",
     name: 'auth',
     component: () => import('../views/Auth.vue'),
     children: [
@@ -11,20 +11,14 @@ const routes = [
       ]
   },
 
-  {
-    path: '/',
-    redirect: { name: 'Home' }
-  },
-  {
-    path: '/task-app/',
-    name: 'Home',
-    component: () => import('../views/Home.vue') 
-  },
+  { path: "", 
+    name: "home", 
+    component: () => import("../views/Home.vue") },
 
 ]
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes,
 })
 
