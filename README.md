@@ -13,6 +13,11 @@
 </h2>
 
 ---
+<h2 >About the project: </h2>
+
+
+
+---
 
 ### :man_technologist: :rocket: About Me :
 
