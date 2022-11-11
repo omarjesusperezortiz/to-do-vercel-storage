@@ -15,6 +15,19 @@
 ---
 <h2 >About the project: </h2>
 
+<h3> Task Function. </h3>
+
+<h2 align="center">
+<img width="400px" src="https://github.com/omarjesusperezortiz/final-project-ironhack/blob/master/media/taskfunction.gif" alt="taskgif">
+</h2>
+
+<h3>Sign Up function with SupaBase.</h3>
+
+<h2 align="center">
+<img width="400px" src="https://github.com/omarjesusperezortiz/final-project-ironhack/blob/master/media/signup.gif" alt="taskgif">
+</h2>
+
+
 
 
 ---
