@@ -27,7 +27,7 @@
         </div>
           <button type="submit" class="btn btn-dark btn-lg btn-block">Iniciar</button>
       </form>
-      <p>¿Aun no te has registrado? Regístrate <router-link :to="{ name: 'register'}" class="link">aquí</router-link> </p>
+      <p>¿Aun no te has registrado? Regístrate <router-link to="/auth/register" class="link">aquí</router-link> </p>
   </div>
 
 </div>
@@ -61,7 +61,7 @@ const signIn = async () => {
     // redirects user to the homeView
     errorMsg.value = 'Iniciando sesion...'
       setTimeout(() => {
-        router.push({ name: "Home" })},
+        router.push({ name: "home" })},
        2000);
   } catch (error) {
     // Si existe algun error, se mostrará encima del login form
