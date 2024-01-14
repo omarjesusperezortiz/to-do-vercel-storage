@@ -2,19 +2,24 @@
   <div class="nav">
     <h1 class="app-logo"><span class="clip">TaskApp</span></h1>
     <div class="user-container">
-      <!-- Aqui declaramos el boton que realiza la sesion out -->
-      <button class="logOut" @click="logOut()">Cerrar sesion</button>
+      <button class="logOut" @click="logOut">Cerrar sesion</button>
     </div>
   </div>
 </template>
+
 <script setup>
-//Definimos un emite para enviar informacion a la funcion en Home de logOut
-const emit = defineEmits(["log-out"]);
+import { useAuthStore } from '../store/auth.js';
+import { useRouter } from 'vue-router';
+
+const userStore = useAuthStore();
+const router = useRouter();
 
 const logOut = () => {
-  emit("log-out");
+  userStore.logout(); // This should handle the logic of clearing user data and tokens
+  router.push({ name: 'login' }); // Redirect to login page
 };
 </script>
+
 <style scoped>
 
 .user-container{

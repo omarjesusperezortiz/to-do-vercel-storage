@@ -1,10 +1,8 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
-  // Carpeta donde creara el build
   build: {
     outDir: 'docs',
     rollupOptions: {
@@ -25,8 +23,8 @@ export default defineConfig({
   //    }
   // produccion seria github pages
   // desarrollo seria yarn dev
-  base: process.env.NODE_ENV === 'production' ? '/final-project-ironhack/' : '/',
+  base: process.env.NODE_ENV === 'production' ? '/to-do-app/' : '/',
   server: {
-    base: process.env.NODE_ENV === 'production' ? '/final-project-ironhack/' : '/',
+    base: process.env.NODE_ENV === 'production' ? '/to-do-app/' : '/',
 }
 })

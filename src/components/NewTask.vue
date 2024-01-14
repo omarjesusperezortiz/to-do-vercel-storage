@@ -1,99 +1,75 @@
 <template>
-    <Transition>
-      <div class="addError" v-if="showErrorMessage">
-        <h3 class="error-text">{{ errorMessage }}</h3>
-      </div>
-    </Transition>
+  <Transition>
+    <div class="addError" v-if="showErrorMessage">
+      <h3 class="error-text">{{ errorMessage }}</h3>
+    </div>
+  </Transition>
   <div class="form-container"  >
-
-    <!-- titulo -->
-        <div class="form-group">
-
-            <!-- <h4>Titulo</h4> -->
-          <input
-            class="input-field-input"
-            type="text"
-            placeholder="Titulo de tarea"
-            v-model="title"
-            />
-     
+    <div class="form-group">
+      <input
+          class="input-field-input"
+          type="text"
+          placeholder="Titulo de tarea"
+          v-model="title"
+      />
     </div>
-    <!-- descripcion -->
-        <div class="form-group">
-            <!-- <h4>Descripcion</h4> -->
+    <div class="form-group">
       <textarea
-        class="input-field-input"
-        rows="4"
-        type="text"
-        placeholder="Descripcion..."
-        v-model="description"/>
-        </div>
-
-    <!-- Crear nueva tarea -->
-    <div class="form-group task-button">
-        <button @click="finalAddTask"  class="button">
-          <span>Agregar</span>
-          <span class="commandenter">⌘ enter</span>
-        </button>
+          class="input-field-input"
+          rows="4"
+          type="text"
+          placeholder="Descripcion..."
+          v-model="description"/>
     </div>
-
+    <div class="form-group task-button">
+      <button @click="finalAddTask"  class="button">
+        <span>Agregar</span>
+        <span class="commandenter">⌘ enter</span>
+      </button>
+    </div>
   </div>
 </template>
 <script setup>
-
 import { ref } from "vue";
-import { useTaskStore } from "../store/task" 
+import { useTaskStore } from "../store/task";
+import { onMounted, onUnmounted } from 'vue';
 
-
-// Aqui se salva la informacion de tarea que será mostrada en home.view
-const setTask = useTaskStore();
+const taskStore = useTaskStore();
 const title = ref('');
 const description = ref('');
-//Variable condicional para mostrar el div contenedor del mensaje de error
 const showErrorMessage = ref(false);
-const errorMessage = ref(null);
+const errorMessage = ref('');
 
-
-const emit = defineEmits(['add-task','show']);
-
-const finalAddTask = () => {
-  if(title.value.length === 0 || description.value.length === 0){
+const finalAddTask = async () => {
+  if (title.value.length === 0 || description.value.length === 0) {
     showErrorMessage.value = true;
     errorMessage.value = '¡Tienes que llenar ambos campos!';
     setTimeout(() => {
-      // errorMessage.value = null;
       showErrorMessage.value = false;
     }, 5000);
   } else {
-    const newTask = {
-      name: title.value,
-      description: description.value,
-    };
-
-    console.log(newTask);
-
-    emit("add-task", newTask);
-    title.value = '';
-    description.value = '';
-
-    emit("show");
-
-    // setTask.addTask(name.value, description.value);
-    // name.value = '';
-    // description.value = '';
+    try {
+      await taskStore.addTask(title.value, description.value);
+      title.value = '';
+      description.value = '';
+    } catch (error) {
+      console.error('Error adding task:', error);
+      // Handle task addition error
+    }
   }
 };
-
-//AQUI HAREMOS QUE SE REALIZE EL SUBMIT CON CONTROL Y ENTER
-
-document.addEventListener('keydown', (e) => {  
-        // e.preventDefault();
-        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-            console.log('fire!')
-            finalAddTask()
-        }  
-    })
-
+// Keyboard Shortcut for Submitting the Task
+const handleKeyDown = (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+    finalAddTask();
+  }
+};
+onMounted(() => {
+  document.addEventListener('keydown', handleKeyDown);
+});
+onUnmounted(() => {
+  document.removeEventListener('keydown', handleKeyDown);
+});
 
 </script>
 <style scoped>

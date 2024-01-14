@@ -3,33 +3,27 @@
 </template>
 
 <script setup>
+import {onMounted} from 'vue';
+import {useAuthStore} from "./store/auth";
+import {useRouter} from "vue-router";
 
-import {ref,onMounted} from 'vue'
-import {useStore} from "./store/auth"
-import { storeToRefs } from "pinia";
-import { useRouter } from "vue-router";
-
-//Router para redireccionar de home a login en caso no exista user.
 const router = useRouter();
-//Usamos userStore para recibir la informacion de usuario
-const userStore = useStore();
-//Usamos {user} para detectar si el user tiene alguna informacion o no y con esto crear la condicional de redireccion
-const {user} = storeToRefs(userStore);
+const authStore = useAuthStore();
 
-//REDIRECCION EN BASE A CREDENCIALES
-onMounted( async () =>{
-
-    await userStore.fetchUser() //Aqui llamamos al usuario
-
-    if(!user.value){     //Esta condicion redirecciona el login al home en caso no haya info de user.
-
-      router.push({ name: "login" })
+onMounted(async () => {
+  authStore.rehydrateUser(); // Rehydrate auth state from localStorage
+  if (!authStore.isAuthenticated) {
+    // User is not authenticated, redirect to login
+    await router.push({name: 'login'});
+  } else {
+    try {
+      await authStore.fetchUser(); // Fetch user from API
+    } catch (error) {
+      console.error('Failed to fetch user:', error);
     }
-    else{console.log("adios")}
-})
-
+  }
+});
 </script>
 
 <style scoped>
-
 </style>

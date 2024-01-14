@@ -1,98 +1,61 @@
-//TASK JS
+// /src/store/task.js
+import { defineStore } from 'pinia';
+import axios from 'axios';
 
-//AQUI ALMACENAMOS LAS ACCIONES DE TASK
+export const useTaskStore = defineStore('task', {
+    state: () => ({
+        tasks: []
+    }),
+    actions: {
+        async fetchTasks() {
+            try {
+                const response = await axios.get('/api/tasks/get');
+                this.tasks = response.data;
+            } catch (error) {
+                console.error('Error fetching tasks:', error);
+            }
+        },
 
-import {defineStore} from 'pinia'
-import { supabase } from "../api/index";
-import { useStore } from "./auth";
+        async addTask(title, description) {
+            try {
+                const response = await axios.post('/api/tasks/post', { title, description });
+                this.tasks.push(response.data); // Add the new task to the state
+            } catch (error) {
+                console.error('Error adding task:', error);
+            }
+        },
 
+        async updateTask(id, title, description) {
+            try {
+                const response = await axios.put('/api/tasks/put', { id, title, description });
+                const updatedTaskIndex = this.tasks.findIndex(task => task.id === id);
+                if (updatedTaskIndex !== -1) {
+                    this.tasks[updatedTaskIndex] = response.data;
+                }
+            } catch (error) {
+                console.error('Error updating task:', error);
+            }
+        },
 
+        async deleteTask(id) {
+            try {
+                await axios.delete('/api/tasks/delete', { data: { id } });
+                this.tasks = this.tasks.filter(task => task.id !== id);
+            } catch (error) {
+                console.error('Error deleting task:', error);
+            }
+        },
 
-export const useTaskStore = defineStore('task',{
-    state:()=>{
-        return{
-            task:[]
-        }
+        async toggleTask(id, isComplete) {
+            try {
+                const response = await axios.put('/api/tasks/put', { id, is_complete: isComplete });
+                const updatedTaskIndex = this.tasks.findIndex(task => task.id === id);
+                if (updatedTaskIndex !== -1) {
+                    this.tasks[updatedTaskIndex] = response.data;
+                }
+            } catch (error) {
+                console.error('Error toggling task:', error);
+            }
+        },
     }
-,
-  actions: {
-    async fetchTasks() {
-      const { data: task } = await supabase
-        .from("Task")
-        .select("*")
-        .order("id", { ascending: false });
-      this.task = task;
-      console.log(task,'lista de tasks')
-      return this.task;
-    },
-
-    // New code
-// task:    {
-//     user_id: id,
-//     title: 'Titulo',
-//     description: 'Descripcion del task'
-//      }
-
-async addTask(title, description) {
-  const { data, error } = await supabase.from("Task").insert([
-    {
-      user_id: useStore().user.id,
-      title,
-      is_complete: false,
-      description,
-      
-    },
-  ]);
-},
-    
-    // async getTasks ()  {
-    // const response = await supabase 
-    //   .from('Task')
-    //   .select('*')
-    //   .order('id',{ ascending:false})
-
-    //   console.log(response)},
-
-//UPDATE TASK
-
-    //task:  { 
-    //     title: 'titulo modificado',
-    //     description: 'Descripcion del task modificado'
-    // }
-
-    async updateTask(title,description,id) {
-    const response = await supabase
-    .from('Task')
-    .update({
-      title: title,
-      description: description,
-    })
-    .match({id: id})
-  
-  
-    console.log(response)
-  },
-
-  // DELETE MATCHING ROWS
-    async deleteTask (id) {
-
-    const response = await supabase
-    .from('Task')
-    .delete()
-    .match({id: id})
-  
-    console.log(response)
-  
-  },
-
-  //CON ESTO CAMBIAMOS DE FALSO A VERDADERO
-    async toggleTask(toggle, id){
-      const { data, error } = await supabase
-      .from("Task")
-      .update({is_complete: toggle})
-      .match({id: id});
-    },
-  },
-
-}
-)
+});
