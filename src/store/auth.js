@@ -14,6 +14,7 @@ export const useAuthStore = defineStore('auth', {
         async login(credentials) {
             try {
                 const response = await axios.post('/api/users/login', credentials)
+                console.log("JWT Secret:", process.env.JWT_SECRET);
                 this.user = response.data.user
                 this.token = response.data.token
                 localStorage.setItem('token', this.token)

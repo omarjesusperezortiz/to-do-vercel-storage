@@ -19,13 +19,13 @@ export default async function handler(req, res) {
             'INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id, email',
             [email, hashedPassword]
         );
-
         // Generate a token
         const token = jwt.sign({ userId: newUser.rows[0].id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         res.status(201).json({ user: newUser.rows[0], token });
     } catch (error) {
-        res.status(500).json({ error: 'Internal server error' });
+        console.error('Registration error:', error);
+        res.status(500).json({ error: 'Internal server error', details: error.message });
     } finally {
         await client.end();
     }

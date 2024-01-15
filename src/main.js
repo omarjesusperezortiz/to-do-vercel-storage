@@ -7,7 +7,7 @@ import VueAxios from 'vue-axios';
 import './style.css';
 import { useAuthStore } from './store/auth'
 
-axios.defaults.baseURL = import.meta.env.VITE_API_URL;
+axios.defaults.baseURL = import.meta.env.POSTGRES_URL
 
 const app = createApp(App);
 
