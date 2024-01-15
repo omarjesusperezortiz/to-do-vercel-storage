@@ -4,7 +4,7 @@ import vue from '@vitejs/plugin-vue';
 export default defineConfig({
     plugins: [vue()],
     build: {
-        outDir: 'docs',
+        outDir: 'dist',
         rollupOptions: {
             output: {
                 entryFileNames: `assets/[name].js`,
@@ -13,8 +13,5 @@ export default defineConfig({
             }
         }
     },
-    base: process.env.NODE_ENV === 'production' ? '/to-do-app/' : '/',
-    server: {
-        base: process.env.NODE_ENV === 'production' ? '/to-do-app/' : '/',
-    }
+    base: '/',
 });
