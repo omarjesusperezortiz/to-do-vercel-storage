@@ -26,6 +26,7 @@
   </div>
 </template>
 <script setup>
+
 import { ref, computed } from 'vue';
 import { useTaskStore } from '../store/task';
 import Navbar from '../components/Navbar.vue';

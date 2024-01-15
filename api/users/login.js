@@ -7,11 +7,6 @@ import dotenv from 'dotenv';
 export default async function handler(req, res) {
     const client = await db.connect();
     const { email, password } = req.body;
-    const secret = process.env.JWT_SECRET;
-    if (!secret) {
-        console.error('JWT_SECRET is not set');
-        // handle error appropriately
-    }
 
     try {
         const userQuery = await client.query('SELECT * FROM users WHERE email = $1', [email]);
