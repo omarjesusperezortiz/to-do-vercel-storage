@@ -67,43 +67,6 @@ export const useAuthStore = defineStore('auth', {
             } catch (error) {
                 // Handle error
             }
-        },
-        async updateProfile(profile) {
-            try {
-                const response = await axios.put('/api/auth/me', profile)
-                this.user = response.data
-            } catch (error) {
-                // Handle error
-            }
-        },
-        async updatePassword(passwords) {
-            try {
-                const response = await axios.put('/api/auth/me/password', passwords)
-                this.user = response.data
-            } catch (error) {
-                // Handle error
-            }
-        },
-        async forgotPassword(email) {
-            try {
-                await axios.post('/api/auth/forgot-password', { email })
-            } catch (error) {
-                // Handle error
-            }
-        },
-        async resetPassword(reset) {
-            try {
-                await axios.post('/api/auth/reset-password', reset)
-            } catch (error) {
-                // Handle error
-            }
-        },
-        async verifyEmail(verification) {
-            try {
-                await axios.post('/api/auth/verify-email', verification)
-            } catch (error) {
-                // Handle error
-            }
         }
     }
 })

@@ -1,115 +1,110 @@
 <template>
-  <div class="task-container">
-    <TransitionGroup>
-      <div
-          class="card-container"
-          :class="{ doneCard: task.is_complete === true }"
-          v-for="(task, index) in task"
+  <div
+    class="card-container"
+    :class="{ doneCard: isTaskCompleted }"
+  >
+    <div class="card-task">
+      <button
+        class="buttonDone buttonRight"
+        :class="buttonClasses"
+        type="button"
+        @click="toggleTask(task.id, task.status)"
       >
-        <div class="card-task">
-          <!-- Botton completar -->
-          <button class="buttonDone buttonRight"
-                  :class="{ buttonlight: task.is_complete === true,
-                    doneclicked: task.is_complete === true  }"
-                  type="button"
-                  @click="toggleTask(task.is_complete, task.id)"
-                  id="buttonDone"
-          >
-            <i class="fa-solid fa-check"></i>
-          </button>
-
-          <!-- ESTO ES LA INFO DE LA TAREA EN TARJETA -->
-
-          <h3 class="overflow">{{ task.title }}</h3>
-          <p class="overflow">{{ task.description }}</p>
-
-          <!-- Boton Borrar  -->
-          <button
-              v-if="task.is_complete"
-              :class="{ buttonlight: task.is_complete === true }"
-              class="buttonRight"
-              type="button"
-              @click="deleteTask(task.id)"
-              id="buttonDelete"
-          >
-            <i class="fa-solid fa-trash"></i>
-          </button>
-          <!-- Boton editar  -->
-          <button
-              v-else
-              :class="{ buttonlight: task.is_complete === true }"
-              class="buttonRight"
-              type="button"
-              @click="changeNameActiveValue(task)"
-              id="buttonEdit"
-          >
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </button>
-        </div>
-        <Transition>
-          <div v-if="changeNameActive && idRef === task.id" class="changeName">
-            <!-- @click="changeName(task.id, index)" -->
-            <div class="add-task-form">
-              <div class="form-group">
-                <input
-                    class="input-field-input"
-                    type="text"
-                    v-model="name"
-                />
-              </div>
-              <div class="form-group">
-              <textarea
-                  class="input-field-input"
-                  type="text"
-                  rows="6"
-                  style="overflow:scroll"
-                  v-model="description"
-              />
-              </div>
-              <!-- <button @click.prevent="errorFunction" class="button">Add</button> -->
-              <div class="form-group change-button">
-                <button @click="changeNameTask(task.id, index)" class="button">
-                  Editar tarea
-                </button>
-              </div>
-            </div>
+        <i class="fa-solid fa-check" />
+      </button>
+      <h3 class="overflow">
+        {{ task.title }}
+      </h3>
+      <p class="overflow">
+        {{ task.description }}
+      </p>
+      <button
+        v-if="isTaskCompleted"
+        class="buttonRight"
+        :class="buttonClasses"
+        type="button"
+        @click="deleteTask(task.id)"
+      >
+        <i class="fa-solid fa-trash" />
+      </button>
+      <button
+        v-else
+        class="buttonRight"
+        :class="buttonClasses"
+        type="button"
+        @click="changeNameActiveValue(task)"
+      >
+        <i class="fa-solid fa-magnifying-glass" />
+      </button>
+    </div>
+    <Transition name="fade">
+      <div
+        v-if="changeNameActive && idRef === task.id"
+        class="changeName"
+      >
+        <div class="add-task-form">
+          <div class="form-group">
+            <input
+              v-model="name"
+              class="input-field-input"
+              type="text"
+            >
           </div>
-        </Transition>
-        <Transition>
-          <div
-              @click="changeNameActiveValue(task)"
-              class="background-task-effect"
-              v-if="changeNameActive && idRef === task.id"
-          ></div>
-        </Transition>
+          <div class="form-group">
+            <textarea
+              v-model="description"
+              class="input-field-input"
+              type="text"
+              rows="6"
+              style="overflow:scroll"
+            />
+          </div>
+          <div class="form-group change-button">
+            <button
+              class="button"
+              @click="changeDescriptionTask(task.id)"
+            >
+              Editar tarea
+            </button>
+          </div>
+        </div>
       </div>
-    </TransitionGroup>
+    </Transition>
+    <Transition>
+      <div
+        v-if="changeNameActive && idRef === task.id"
+        class="background-task-effect"
+        @click="changeNameActiveValue(task)"
+      />
+    </Transition>
   </div>
 </template>
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue"
 import { useTaskStore } from "../store/task"
 
 const taskStore = useTaskStore();
-// const editToggle = ref(true);
 const props = defineProps({
-  task: Array,
+  task: Object,
 });
 
 const name = ref("");
 const description = ref("");
 const changeNameActive = ref(false);
 const idRef = ref(null);
-const show = ref(false);
+
+const isTaskCompleted = computed(() => props.task.status !== 'pending');
+const buttonClasses = computed(() => ({ buttonlight: isTaskCompleted.value }));
 const changeNameActiveValue = (task) => {
   idRef.value = task.id;
   changeNameActive.value = !changeNameActive.value;
   name.value = task.title;
   description.value = task.description;
 };
-const toggleTask = async (toggle, id) => {
+const toggleTask = async (id, status) => {
   try {
-    await taskStore.toggleTask(id, !toggle);
+    const newStatus = status === 'pending' ? 'completed' : 'pending';
+    await taskStore.toggleTask(id, newStatus);
   } catch (error) {
     console.error('Error toggling task:', error);
   }
@@ -121,21 +116,17 @@ const deleteTask = async (id) => {
     console.error('Error deleting task:', error);
   }
 };
-const changeNameTask = async (id) => {
+const changeDescriptionTask = async (id) => {
   try {
-    await taskStore.updateTask(id, name.value, description.value);
-    name.value = '';
-    description.value = '';
-    changeNameActive.value = false;
+    await taskStore.updateTask(id, name.value, description.value)
+    name.value = ''
+    description.value = ''
+    changeNameActive.value = false
   } catch (error) {
     console.error('Error updating task:', error);
   }
 };
-const emit = defineEmits([
-  "editTask",
-  "deleteTask",
-  "toggleTask",
-]);
+
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') {
     changeNameActive.value = false;
@@ -170,15 +161,9 @@ document.addEventListener('keydown', (event) => {
   justify-content: center;
   margin:0;
 }
-.task-container {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 20px;
-  margin-bottom: 30px;
-  margin-top:100px
-}
 .card-container {
   padding: 0 !important;
+  width:250px
 }
 .doneCard {
   border: 1px solid #1f1f1f;

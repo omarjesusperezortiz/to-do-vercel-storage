@@ -1,30 +1,51 @@
 <template>
-  <Transition appear>
-    <div class="main-container">
-      <div class="vue-template card-container modify2">
-        <Transition>
-          <div v-if="errorMsg" class="addError modify">
-            <h3  class="error-text"> {{ errorMsg }} </h3>
-          </div>
-        </Transition>
-        <form @submit.prevent='signIn'>
-          <h2 >Iniciar Sesion</h2>
-          <div class="register-login-container">
-            <h4>Correo electrónico</h4>
-            <div class="form-group">
-              <input v-model="email" type="email" class="register-login-input" required/>
-            </div>
-            <h4>Constraseña</h4>
-            <div class="form-group">
-              <input v-model="password" type="password" class="register-login-input" required/>
-            </div>
-          </div>
-          <button type="submit" class="btn btn-dark btn-lg btn-block">Iniciar</button>
-        </form>
-        <p>¿Aun no te has registrado? Regístrate <router-link to="/auth/register" class="link">aquí</router-link> </p>
-      </div>
+  <Transition>
+    <div
+      v-if="loading"
+      class="add-error modify"
+    >
+      <h3 class="error-text">
+        {{ message }}
+      </h3>
     </div>
   </Transition>
+  <form @submit.prevent="signIn">
+    <h2>Iniciar Sesion</h2>
+    <div class="register-login-container">
+      <h4>Correo electrónico</h4>
+      <div class="form-group">
+        <input
+          v-model="email"
+          type="email"
+          class="register-login-input"
+          required
+        >
+      </div>
+      <h4>Constraseña</h4>
+      <div class="form-group">
+        <input
+          v-model="password"
+          type="password"
+          class="register-login-input"
+          required
+        >
+      </div>
+    </div>
+    <button
+      type="submit"
+      class="btn btn-dark btn-lg btn-block"
+    >
+      Iniciar
+    </button>
+  </form>
+  <p>
+    ¿Aun no te has registrado? Regístrate <router-link
+      to="/auth/register"
+      class="link"
+    >
+      aquí
+    </router-link>
+  </p>
 </template>
 <script setup>
 import { ref } from 'vue';
@@ -35,27 +56,29 @@ const router = useRouter();
 const userStore = useAuthStore();
 const email = ref('');
 const password = ref('');
-const errorMsg = ref("");
+const message = ref("");
+const loading = ref(false);
 
 const signIn = async () => {
+  message.value = 'Iniciando sesión...';
+  loading.value = true;
   try {
-    await userStore.login({ email: email.value, password: password.value });
+    await userStore.login({ email: email.value, password: password.value })
     // Check if login was successful
     if (userStore.isAuthenticated) {
-      errorMsg.value = 'Iniciando sesión...';
       setTimeout(() => {
+        loading.value = false;
         router.push({ name: "home" });
       }, 2000);
     } else {
       // Handle case where login was not successful
-      errorMsg.value = userStore.loginError || 'Error en las credenciales';
-      setTimeout(() => errorMsg.value = null, 5000);
+      message.value = 'Error en las credenciales';
+      setTimeout(() => message.value = null, 5000);
     }
   } catch (error) {
     // Handle network or other unexpected errors
-    errorMsg.value = error.response?.data?.message || 'Error en las credenciales';
-    console.log(error);
-    setTimeout(() => errorMsg.value = null, 5000);
+    message.value = error.response?.data?.message || 'Error en las credenciales';
+    setTimeout(() => message.value = null, 5000);
   }
 }
 </script>
@@ -78,11 +101,6 @@ const signIn = async () => {
   display: flex;
   gap: 20px;
 }
-.modify2{
-  width:350px!important;
-  height:auto!important;
-  padding: 15px 40px;
-}
 h4{
   margin:0;
   text-align:start
@@ -90,16 +108,7 @@ h4{
 .modify{
   margin-top:-215px
 }
-.main-container {
-  max-width: 1280px;
-  margin: 0 auto;
-  text-align: center;
-  place-items:center;
-  display: flex;
-  min-width: 320px;
-  min-height: 100vh;
-  justify-content: center;
-}
+
 .link{
   cursor:pointer;
 }
