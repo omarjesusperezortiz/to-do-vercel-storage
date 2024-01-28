@@ -51,7 +51,8 @@ button:focus-visible {
   padding: 2em;
 }
 #app {
-margin: 0 auto;
+  margin: 0 auto;
+  position: relative;
 }
 .card-container{
 
@@ -79,7 +80,6 @@ margin: 0 auto;
 
   position:absolute;
   margin-top:-180px;
-  position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);

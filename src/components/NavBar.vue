@@ -34,6 +34,7 @@ const logOut = () => {
   top: 0;
   z-index: 1;
   padding: 20px;
+  backdrop-filter: saturate(50%) blur(8px);
 }
 .nav {
   position: relative;
@@ -45,7 +46,6 @@ const logOut = () => {
   right: 0;
   width: 100%;
   background-color: transparent;
-  backdrop-filter: saturate(50%) blur(8px);
 }
 .logo {
   color: transparent;

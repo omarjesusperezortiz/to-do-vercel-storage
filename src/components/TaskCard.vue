@@ -32,44 +32,11 @@
         class="buttonRight"
         :class="buttonClasses"
         type="button"
-        @click="changeNameActiveValue(task)"
+        @click="openEditTask(task)"
       >
         <i class="fa-solid fa-magnifying-glass" />
       </button>
     </div>
-    <Transition name="fade">
-      <div
-        v-if="changeNameActive && idRef === task.id"
-        class="changeName"
-      >
-        <div class="add-task-form">
-          <div class="form-group">
-            <input
-              v-model="name"
-              class="input-field-input"
-              type="text"
-            >
-          </div>
-          <div class="form-group">
-            <textarea
-              v-model="description"
-              class="input-field-input"
-              type="text"
-              rows="6"
-              style="overflow:scroll"
-            />
-          </div>
-          <div class="form-group change-button">
-            <button
-              class="button"
-              @click="changeDescriptionTask(task.id)"
-            >
-              Editar tarea
-            </button>
-          </div>
-        </div>
-      </div>
-    </Transition>
     <Transition>
       <div
         v-if="changeNameActive && idRef === task.id"
@@ -85,13 +52,16 @@ import { useTaskStore } from "../store/task"
 
 const taskStore = useTaskStore();
 const props = defineProps({
-  task: Object,
-});
-
+  task: {
+    type: Object,
+    required: true,
+  },
+})
 const name = ref("");
 const description = ref("");
 const changeNameActive = ref(false);
 const idRef = ref(null);
+const emit = defineEmits(['openEditTask'])
 
 const isTaskCompleted = computed(() => props.task.status !== 'pending');
 const buttonClasses = computed(() => ({ buttonlight: isTaskCompleted.value }));
@@ -100,6 +70,9 @@ const changeNameActiveValue = (task) => {
   changeNameActive.value = !changeNameActive.value;
   name.value = task.title;
   description.value = task.description;
+};
+const openEditTask = (task) => {
+  emit('openEditTask', task);
 };
 const toggleTask = async (id, status) => {
   try {
@@ -116,22 +89,6 @@ const deleteTask = async (id) => {
     console.error('Error deleting task:', error);
   }
 };
-const changeDescriptionTask = async (id) => {
-  try {
-    await taskStore.updateTask(id, name.value, description.value)
-    name.value = ''
-    description.value = ''
-    changeNameActive.value = false
-  } catch (error) {
-    console.error('Error updating task:', error);
-  }
-};
-
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') {
-    changeNameActive.value = false;
-  }
-});
 </script>
 <style scoped>
 .overflow{
@@ -180,10 +137,10 @@ document.addEventListener('keydown', (event) => {
 .background-task-effect {
   background: rgba(0, 0, 0, 0.6);
   position: fixed;
-  top: 0px;
-  right: 0px;
-  bottom: 0px;
-  left: 0px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 .changeName {
   position: fixed;

@@ -1,6 +1,6 @@
 // /api/tasks/delete.js
 import { sql} from '@vercel/postgres';
-import { authenticateToken} from "../utils/auth";
+import { authenticateToken} from "../utils/auth.js";
 
 export default async (req, res) => {
     const { id } = req.body;

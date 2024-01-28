@@ -17,6 +17,7 @@
           :key="task.id"
           :task="task"
           @load-tasks="loadTasks"
+          @open-edit-task="openEditTask"
         />
       </div>
     </template>
@@ -38,12 +39,26 @@
     <section
       class="new-task-modal"
       role="dialog"
-      aria-labelledby="newTaskTitle"
       @click.stop
     >
       <NewTask
-        class="new-task-button"
         @close="toggleNewTaskVisibility"
+      />
+    </section>
+  </div>
+  <div
+    v-if="showEditTask"
+    class="background-task-effect"
+    @click="toggleEditTaskVisibility"
+  >
+    <section
+      class="new-task-modal"
+      role="dialog"
+      @click.stop
+    >
+      <EditTask
+        :task-data="editTaskData"
+        @close="toggleEditTaskVisibility"
       />
     </section>
   </div>
@@ -51,14 +66,25 @@
 <script setup>
 import {ref, computed, onMounted, onUnmounted, nextTick} from 'vue';
 import { useTaskStore } from '../store/task';
-import Navbar from '../components/Navbar.vue';
+import Navbar from '../components/NavBar.vue';
 import NewTask from '../components/NewTask.vue';
 import TaskCard from "../components/TaskCard.vue";
+import EditTask from "../components/EditTask.vue";
 
 const taskStore = useTaskStore();
 const showNewTask = ref(false);
+const showEditTask = ref(false);
+const editTaskData = ref(
+  {
+    id: null,
+    title: '',
+    description: '',
+  },
+)
+const tasks = computed(() => {
+  return [...taskStore.tasks].sort((a, b) => b.id - a.id);
+});
 const loading = ref(false);
-const tasks = computed(() => taskStore.tasks);
 const modalTriggerElement = ref(null);
 
 const loadTasks = async () => {
@@ -84,6 +110,27 @@ const toggleNewTaskVisibility = () => {
     }
   });
 };
+const toggleEditTaskVisibility = () => {
+  if (!showEditTask.value) {
+    modalTriggerElement.value = document.activeElement;
+  }
+  showEditTask.value = !showEditTask.value;
+  nextTick(() => {
+    if (showEditTask.value) {
+      // Focus the first element in the modal
+    } else {
+      modalTriggerElement.value?.focus();
+    }
+  });
+};
+const openEditTask = (task) => {
+  editTaskData.value = {
+    id: task.id,
+    title: task.title,
+    description: task.description,
+  };
+  toggleEditTaskVisibility();
+};
 const handleKeydown = (event) => {
   if (event.key === 'Escape') {
     showNewTask.value = false;
@@ -107,6 +154,7 @@ loadTasks();
   justify-content: center;
   vertical-align: middle;
   align-items: center;
+  min-height: calc(100vh - 200px);
 }
 .task-container {
   display: grid;
@@ -115,16 +163,16 @@ loadTasks();
   margin-bottom: 30px;
 }
 footer{
-  position: absolute;
+  position: sticky;
   display: flex;
   justify-content: right;
   box-sizing: border-box;
   bottom: 0;
   z-index: 1;
   padding: 20px;
-  margin-bottom:20px;
   width: 100%;
   height: 100px;
+  backdrop-filter: saturate(50%) blur(8px);
 }
 .new-task-button{
   position: relative;
@@ -139,10 +187,10 @@ footer{
 .background-task-effect{
   background:rgba(0, 0, 0, 0.60);
   position:fixed;
-  top:0px;
-  right:0px;
-  bottom:0px;
-  left:0px;
+  top:0;
+  right:0;
+  bottom:0;
+  left:0;
 }
 .new-task-modal{
   position: absolute;
