@@ -2,7 +2,7 @@
 import { authenticateToken } from '../utils/auth.js';
 import { sql } from '@vercel/postgres';
 
-module.exports = async (req, res) => {
+export default async (req, res) => {
     const user = await authenticateToken(req, res);
     if (!user) {
         return res.status(401).json({ error: 'Unauthorized' });

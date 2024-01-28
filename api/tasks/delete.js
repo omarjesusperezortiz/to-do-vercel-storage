@@ -2,7 +2,7 @@
 import { sql} from '@vercel/postgres';
 import { authenticateToken} from "../utils/auth";
 
-module.exports = async (req, res) => {
+export default async (req, res) => {
     const { id } = req.body;
     const user = await authenticateToken(req, res);
     if (!user) {

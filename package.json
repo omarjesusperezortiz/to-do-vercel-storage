@@ -2,8 +2,8 @@
   "name": "vite-project",
   "private": true,
   "version": "0.0.0",
-  "_comment": "Vercel treats all workspaces as commonjs by default you can set in rules in your project to use esm",
-  "type": "commonjs",
+  "_comment": "Vercel treats all workspaces as commonjs by default you can set in rules in your project to use esm aka module",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
